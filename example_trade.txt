@@ -1,0 +1,13 @@
+{
+'transaction_date': '06/17/2022', 
+'owner': 'Spouse', 
+'ticker': 'IBM', 
+'asset_description': 'International Business Machines Corporat', 
+'asset_type': 'Stock', 
+'type': 'Sale (Partial)', 
+'amount': '$1,001 - $15,000', 
+'comment': '--', 
+'senator': 'Shelley M Capito', 
+'ptr_link': 'https://efdsearch.senate.gov/search/view/ptr/3ec54964-5549-470b-bdcc-da34d2ddf5c2/', 
+'disclosure_date': '07/15/2022'
+}
