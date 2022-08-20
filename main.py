@@ -1,9 +1,11 @@
+from urllib import response
 import discord
 from discord import app_commands
 import datetime
 import discord.ext.tasks
+import request
 
-TOKEN = 'MTAwNDk0MTM0NzUzNjUxMTAzNg.GpyTo8.uQNkSeVnsDRbydGey6H_IQwDoWivuvl9XfcUXM'
+TOKEN = '' # Hidden for security
 
 class aclient(discord.Client):
     def __init__(self):
@@ -27,9 +29,42 @@ timeToRun = datetime.time(hour=14, minute=0, second=0)
 @discord.ext.tasks.loop(time=timeToRun)
 async def called_once_a_week():
     await client.wait_until_ready()
-    if datetime.datetime.today().weekday() == 0:
+
+    # check to see if 10am call is on a Monday 
+    if datetime.datetime.today().weekday() != 0:
+        # past 7 days
+        past = datetime.datetime.now() - datetime.timedelta(days=7)
+        data = request.fetch_data()
+
+        if data == False:
+            return
+
+        # loop each channel add
         for channel in channels:
-            await channel.send("ITS 10AM ON MONDAY")
+            responseMessage = "--------**Weekly Breakdown**--------\n"# new
+            # await channel.send("---**Weekly Breakdown**---\n")
+
+            for trade in data:
+                disclosed_date = datetime.datetime.strptime(trade['disclosure_date'], "%m/%d/%Y")
+                if disclosed_date > past:
+                    if (trade['ticker'] != '--'):
+                        responseMessage += ('Name: ' + str(trade['senator']) + '\n'
+                            + 'Stock Ticker: ' + str(trade['ticker']) + '\n'
+                            + 'Transaction Type: ' + str(trade['type']) + '\n'
+                            + 'Amount: ' + str(trade['amount']) + '\n'
+                            + 'Disclosure Date: ' + str(trade['disclosure_date']) + '\n'
+                            + 'Transaction Date: ' + str(trade['transaction_date']) + '\n'
+                            + '----------------------------------------\n')
+
+
+                        """await channel.send('Disclosure Date: ' + trade['disclosure_date'] + '\n'
+                            + 'Transaction Date: ' + trade['transaction_date'] + '\n'
+                            + 'Name: ' + trade['senator'] + '\n'
+                            + 'Stock Ticker: ' + trade['ticker'] + '\n'
+                            + 'Transaction Type: ' + trade['type'] + '\n'
+                            + 'Amount: ' + trade['amount'] + '\n\n')"""
+            await channel.send(responseMessage)
+
 
 
 @client.event
@@ -37,13 +72,15 @@ async def on_guild_join(guild):
     channel = guild.channels[0].text_channels[0]
     await channel.send("**Thanks for adding me to your server!**\n\nTo start, type `/track` and enter the channel you would like updates in\n\nFor other commands, type `/help`")
     
+
 @tree.command(name = "track", description = "Starts tracking Senate trades in specified channel", guild = discord.Object(id=1004942542820876348))
 async def self(interaction: discord.Interaction, channel : discord.TextChannel):
     channels.append(channel)
     if not called_once_a_week.is_running():
         called_once_a_week.start()
-        print("Weekly task started")
-    await interaction.response.send_message(f"{interaction.user.name}, this server will now receive a weekly report of senator trading in `#{channel.name}` on Mondays at 10am EST")
+        print("Weekly task started in server " + interaction.guild.name + " with ID " + str(interaction.guild.id))
+    await interaction.response.send_message(f"{interaction.user.name}, this server will now receive a weekly report of Senate stock trading in <#{channel.id}> on Mondays at 10am EST")
+
 
 @tree.command(name = "pelosiattack", description = "Run it, I dare you", guild = discord.Object(id=1004942542820876348))
 async def attack(interaction: discord.Interaction, channel : discord.VoiceChannel):

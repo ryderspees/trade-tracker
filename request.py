@@ -16,11 +16,9 @@ def fetch_data():
   data.sort(key = lambda x: datetime.strptime(x['disclosure_date'], '%m/%d/%Y'), reverse=False)
   return data
 
-data = fetch_data()
 
-past = datetime.now() - timedelta(days=7)
-
-for trade in data:
+# good formatting for the data if a print is needed
+"""for trade in data:
   disclosed_date = datetime.strptime(trade['disclosure_date'], "%m/%d/%Y")
   if disclosed_date > past:
     if (trade['ticker'] != '--'):
@@ -30,7 +28,7 @@ for trade in data:
       print('Stock Ticker: ' + trade['ticker'])
       print('Transaction Type: ' + trade['type'])
       print('Amount: ' + trade['amount'])
-      print()
+      print()"""
 
 
 
