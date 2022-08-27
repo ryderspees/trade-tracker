@@ -31,7 +31,7 @@ async def called_once_a_week():
     await client.wait_until_ready()
 
     # check to see if 10am call is on a Monday 
-    if datetime.datetime.today().weekday() != 0:
+    if datetime.datetime.today().weekday() == 0:
         # past 7 days
         past = datetime.datetime.now() - datetime.timedelta(days=7)
         data = request.fetch_data()
@@ -39,11 +39,11 @@ async def called_once_a_week():
         if data == False:
             return
 
-        # loop each channel add
+        # loop each channel added from users
         for channel in channels:
             responseMessage = "--------**Weekly Breakdown**--------\n"# new
-            # await channel.send("---**Weekly Breakdown**---\n")
 
+            # make each valid trade look pretty
             for trade in data:
                 disclosed_date = datetime.datetime.strptime(trade['disclosure_date'], "%m/%d/%Y")
                 if disclosed_date > past:
@@ -55,14 +55,6 @@ async def called_once_a_week():
                             + 'Disclosure Date: ' + str(trade['disclosure_date']) + '\n'
                             + 'Transaction Date: ' + str(trade['transaction_date']) + '\n'
                             + '----------------------------------------\n')
-
-
-                        """await channel.send('Disclosure Date: ' + trade['disclosure_date'] + '\n'
-                            + 'Transaction Date: ' + trade['transaction_date'] + '\n'
-                            + 'Name: ' + trade['senator'] + '\n'
-                            + 'Stock Ticker: ' + trade['ticker'] + '\n'
-                            + 'Transaction Type: ' + trade['type'] + '\n'
-                            + 'Amount: ' + trade['amount'] + '\n\n')"""
             await channel.send(responseMessage)
 
 
