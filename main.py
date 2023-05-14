@@ -72,27 +72,6 @@ async def self(interaction: discord.Interaction, channel : discord.TextChannel):
         called_once_a_week.start()
         print("Weekly task started in server " + interaction.guild.name + " with ID " + str(interaction.guild.id))
     await interaction.response.send_message(f"{interaction.user.name}, this server will now receive a weekly report of Senate stock trading in <#{channel.id}> on Mondays at 10am EST")
-
-
-@tree.command(name = "pelosiattack", description = "Run it, I dare you", guild = discord.Object(id=1004942542820876348))
-async def attack(interaction: discord.Interaction, channel : discord.VoiceChannel):
-    # connects to vc
-    vc = await channel.connect()
-
-    # moves everyone to channel
-    for v in interaction.guild.voice_channels:
-        for member in v.members:
-            await member.move_to(channel)
-
-    # mutes all
-    for v in interaction.guild.voice_channels:
-        for member in v.members:
-            if member.bot == False:
-                await member.edit(mute=True)
-
-    # <3
-    await interaction.response.send_message(f"help me", tts=True)
-
-    await vc.disconnect()
+    
 
 client.run(TOKEN)
